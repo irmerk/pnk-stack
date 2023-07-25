@@ -1,0 +1,33 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint Code
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.15.0
+    - run: npm ci
+    - run: npx eslint src
+
+  test:
+    name: Test Code
+    needs: [ lint ]
+    runs-on: ubuntu-latest
+    environment: dev
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18.15.0
+    - run: npm ci
+    - run: npx jest

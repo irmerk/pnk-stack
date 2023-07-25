@@ -1,0 +1,25 @@
+# API keys and secrets
+.env
+
+# Dependency directories
+node_modules
+
+# TypeScript cache
+*.tsbuildinfo
+
+# TypeScript compiler output
+dist
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+.vscode
