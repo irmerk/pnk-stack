@@ -2,7 +2,7 @@
 
 Backend service template using PostgreSQL, Node, and Koa
 
-See my [`outreach` page][outreach]
+See my [`outreach` page's Node Template post][outreach]
 
 ## Development Quickstart
 
@@ -27,8 +27,8 @@ npm i
 npm run dev
 ```
 
-[outreach]: https://github.com/irmerk/outreach
-[setup]: https://github.com/irmerk/outreach
+[outreach]: https://github.com/irmerk/outreach/blob/main/blog/node-template.md
+[setup]: https://github.com/irmerk/outreach/blob/main/blog/node-template.md#setup
 [nvm]: https://github.com/nvm-sh/nvm
 [docker]: https://www.docker.com/get-started/
 [local]: http://localhost:3000
