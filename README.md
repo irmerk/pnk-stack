@@ -4,6 +4,9 @@ Backend service template using PostgreSQL, Node, and Koa
 
 See my [`outreach` page's Node Template post][outreach]
 
+#### TL;DR
+This is a template for a relatively production ready backend Node micro-service. It already has error handling, logging, observability, rate limiting, graceful shutdown, a test file, and Docker optimizations.
+
 ## Development Quickstart
 
 ### Prerequisites
