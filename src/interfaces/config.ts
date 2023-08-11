@@ -1,6 +1,5 @@
 import type { BaseContext } from 'koa';
-import { ParameterizedContext, DefaultContext } from 'koa';
-import { HttpError } from 'http-errors';
+import winston from 'winston';
 
 interface JwtSecrets {
     accessTokenSecret: string;
@@ -21,7 +20,7 @@ export interface KoaMiddleware {
     next(): Promise<any>;
 }
 
-export interface CtxError {
-    ctx: ParameterizedContext<KoaMiddleware, DefaultContext, any>;
-    error: HttpError;
+export interface ShutdownOptions {
+    logger?: typeof console | typeof winston;
+    forceTimeout?: number;
 }

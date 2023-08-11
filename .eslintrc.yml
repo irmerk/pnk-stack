@@ -1,6 +1,7 @@
 env:
   es2021: true
   browser: false
+  jest: true
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 13 # This could also be 'latest'
@@ -14,8 +15,8 @@ extends:
   - plugin:@typescript-eslint/recommended
   - plugin:@typescript-eslint/eslint-recommended
   - plugin:@typescript-eslint/recommended-requiring-type-checking
-  - plugin:jsdoc/recommended
   - airbnb
+  - plugin:jsdoc/recommended
 plugins:
   - "@typescript-eslint"
   - import
@@ -25,10 +26,8 @@ settings:
     node:
       extensions:
         - ".js"
-        - ".mjs"
         - ".ts"
-        - ".mts"
-		typescript: {}
+    typescript: {}
 rules:
   '@typescript-eslint/brace-style':
     - error
@@ -122,12 +121,13 @@ rules:
   brace-style: 'off'
   camelcase: 'off'
   class-methods-use-this: 'off'
-	comma-dangle:
-	  - error
-	  - always-multiline
+  comma-dangle:
+  - error
+  - always-multiline
   keyword-spacing: 'off'
   no-await-in-loop: 'off'
   no-duplicate-imports: 'off'
+  no-restricted-syntax: "off"
   no-shadow: 'off'
   no-unused-expressions: 'off'
   no-unused-vars: 'off'
@@ -161,6 +161,7 @@ rules:
         parameters: first
       SwitchCase: 1
       VariableDeclarator: first
+  jsdoc/tag-lines: "off"
   max-classes-per-file: 'off'
   max-len:
     - warn

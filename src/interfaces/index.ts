@@ -1,7 +1,7 @@
-import { Config, KoaMiddleware, CtxError } from './config';
+import * as Config from './config';
+import * as Errors from './error';
 
 export type {
   Config,
-  KoaMiddleware,
-  CtxError,
+  Errors,
 };

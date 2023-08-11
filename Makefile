@@ -1,4 +1,4 @@
-.PHONY: install-dev install-prod compile lint test start update clean
+.PHONY: install-dev install-prod compile lint test dev start update clean
 
 PROJECT = "PNK Stack"
 
@@ -23,6 +23,10 @@ lint:
 test:
 	echo "Testing ${PROJECT}..."; \
 	npx jest
+
+dev:
+	echo "Locally starting ${PROJECT}..."; \
+	npm run dev
 
 start:
 	echo "Starting ${PROJECT}..."; \

@@ -1,18 +1,23 @@
-import winston from 'winston';
-import { Middleware } from 'koa';
 import { Server as httpServer } from 'http';
+import { Middleware } from 'koa';
 
-import { KoaMiddleware } from '../interfaces';
+import { Config } from '../interfaces';
 import { ENVIRONMENTS } from '../config';
 
-interface Options {
-  logger?: typeof console | typeof winston;
-  forceTimeout?: number;
-}
-
-/* Gracefully shutdown the application when requested, rejecting any requests that come through. */
-
-const createShutdownMiddleware = (server: httpServer, opts: Options) => {
+/**
+ * Gracefully shuts down the application when requested, rejecting any new incoming requests.
+ * If the server doesn't close all connections within the provided timeout (or default 30s),
+ * it will forcefully shut down.
+ *
+ * @param {httpServer} server - The HTTP server instance to be managed.
+ * @param {Config.ShutdownOptions} opts - Configuration options for the shutdown process.
+ * @returns {Middleware<Config.KoaMiddleware>} Koa middleware which responds with a 503
+ * status code if the server is shutting down.
+ */
+const createShutdownMiddleware = (
+  server: httpServer,
+  opts: Config.ShutdownOptions,
+): Middleware<Config.KoaMiddleware> => {
   const logger = opts.logger ?? console; // Defaults to console
   const forceTimeout = typeof opts.forceTimeout === 'number'
     ? opts.forceTimeout
@@ -40,7 +45,8 @@ const createShutdownMiddleware = (server: httpServer, opts: Options) => {
     });
   });
 
-  const middlewareOutput: Middleware<KoaMiddleware> = (ctx, next): Promise<unknown> | void => {
+  // eslint-disable-next-line consistent-return, max-len
+  const middlewareOutput: Middleware<Config.KoaMiddleware> = (ctx, next): Promise<unknown> | void => {
     if (shuttingDown) {
       ctx.status = 503;
       ctx.body = 'Server is in the process of shutting down';

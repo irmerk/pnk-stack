@@ -1,13 +1,19 @@
 import * as winston from 'winston';
 import { HttpError, Middleware, DefaultContext } from 'koa';
 
-import { KoaMiddleware } from '../interfaces';
+import { Config } from '../interfaces';
 import { LOGGER_OPTIONS } from '../config';
 
+/**
+ * Koa middleware for logging HTTP requests and responses using the provided Winston logger.
+ *
+ * @param {winston.Winston} winstonInstance - The Winston logger instance.
+ * @returns {Middleware<Config.KoaMiddleware, DefaultContext, any>} - Koa middleware for logging.
+ */
 const logger = (
   winstonInstance: typeof winston,
-): Middleware<KoaMiddleware, DefaultContext, any> => {
-  const middlewareOutput: Middleware<KoaMiddleware> = async (ctx, next): Promise<void> => {
+): Middleware<Config.KoaMiddleware, DefaultContext, any> => {
+  const middlewareOutput: Middleware<Config.KoaMiddleware> = async (ctx, next): Promise<void> => {
     const start = new Date().getTime();
 
     try {
