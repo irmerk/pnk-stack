@@ -1,5 +1,7 @@
 # PNK Stack Service
 
+⚠️ Still working out issues with my testing, but this is otherwise in a pretty good state ⚠️
+
 Backend service template using PostgreSQL, Node, and Koa
 
 See my [`outreach` page's Node Template post][outreach]
