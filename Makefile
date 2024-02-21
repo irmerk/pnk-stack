@@ -18,7 +18,8 @@ compile:
 
 lint:
 	echo "Linting ${PROJECT}..."; \
-	npx tsc --noEmit && npx eslint src
+	npx tsc --noEmit \
+	npx eslint src
 
 test:
 	echo "Testing ${PROJECT}..."; \
@@ -30,7 +31,8 @@ dev:
 
 start:
 	echo "Starting ${PROJECT}..."; \
-	npm run compile && node ./dist
+	npm run compile \
+	node ./dist
 
 update:
 	echo "Updating ${PROJECT}..."; \

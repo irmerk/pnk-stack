@@ -12,7 +12,7 @@ This is a template for a relatively production ready backend Node micro-service.
 ### Prerequisites
 
 1. Development environment setup through my [guide][setup]
-2. Node.js `v18.15.0` (recommended to use [`nvm`][nvm])
+2. Node.js `v20.10.0` (recommended to use [`nvm`][nvm])
 3. [Docker][docker]
 
 ### Setup
@@ -23,11 +23,26 @@ nvm install && nvm use
 ```
 2. Install dependencies:
 ```sh
-npm i
+make install-dev
 ```
 3. Run locally at [`localhost:3000`][local]:
 ```sh
-npm run dev
+make dev
+```
+
+### Test
+
+1. Compose the Docker image:
+```sh
+docker compose up -d
+```
+2. Run the database migration:
+```sh
+docker compose exec app npx prisma migrate deploy
+```
+3. Test the code:
+```sh
+make test
 ```
 
 [outreach]: https://github.com/irmerk/outreach/blob/main/blog/node-template.md
