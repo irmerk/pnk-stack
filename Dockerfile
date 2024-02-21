@@ -3,10 +3,10 @@
 ####################
 
 # Specify the base image with a certain version and platform to be used for subsequent instructions
-FROM --platform=linux/amd64 node:18.16.0-bookworm-slim AS base
+FROM --platform=linux/amd64 node:20.10.0-alpine AS base
 
-# Update the list of available packages and install dumb-init, a process supervisor that forwards signals to children
-RUN apt-get update && apt-get install -y dumb-init
+# Install dumb-init, a process supervisor that forwards signals to children
+RUN apk add --update dumb-init
 # Set dumb-init as the entry point of the container. It deals with zombie processes and passes signals to the application process.
 ENTRYPOINT ["dumb-init", "--"]
 
@@ -25,8 +25,12 @@ WORKDIR /app
 COPY --chown=node:node package*.json ./
 # Install all the dependencies and globally install typescript
 RUN npm ci
+# Ensure the Prisma schema file is copied into the Docker container
+COPY --chown=node:node prisma ./prisma
 # Copy the rest of the application source code into the container, using chown option to change the owner to node.
 COPY --chown=node:node . .
+# Generate the Prisma client
+RUN npx prisma generate
 
 # Compile TypeScript code to JavaScript
 RUN npx tsc

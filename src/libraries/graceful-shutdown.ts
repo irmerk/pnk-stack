@@ -1,8 +1,8 @@
-import { Server as httpServer } from 'http';
-import { Middleware } from 'koa';
+import { Server as httpServer } from "http";
+import { Middleware } from "koa";
 
-import { Config } from '../interfaces';
-import { ENVIRONMENTS } from '../config';
+import { Config } from "../interfaces";
+import { ENVIRONMENT } from "../config";
 
 /**
  * Gracefully shuts down the application when requested, rejecting any new incoming requests.
@@ -16,41 +16,47 @@ import { ENVIRONMENTS } from '../config';
  */
 const createShutdownMiddleware = (
   server: httpServer,
-  opts: Config.ShutdownOptions,
+  opts: Config.ShutdownOptions
 ): Middleware<Config.KoaMiddleware> => {
   const logger = opts.logger ?? console; // Defaults to console
-  const forceTimeout = typeof opts.forceTimeout === 'number'
-    ? opts.forceTimeout
-    : (30 * 1000); // Defaults to 30s
+  const forceTimeout =
+    typeof opts.forceTimeout === "number" ? opts.forceTimeout : 30 * 1000; // Defaults to 30s
 
   let shuttingDown = false;
 
-  process.on('SIGTERM', () => {
+  process.on("SIGTERM", () => {
     if (shuttingDown) return; // We already know we're shutting down, don't continue this function
-    if (!process.env.NODE_ENV || process.env.NODE_ENV === ENVIRONMENTS.DEV) {
+    if (
+      !process.env.NODE_ENV ||
+      process.env.NODE_ENV === ENVIRONMENT.OPTIONS.DEV
+    ) {
       process.exit(0); // Don't bother with graceful shutdown in development
     }
     shuttingDown = true;
 
-    logger.warn('Received kill signal (SIGTERM), shutting down...');
+    logger.warn("Received kill signal (SIGTERM), shutting down...");
 
     setTimeout(() => {
-      logger.error('Could not close connections in time, forcefully shutting down');
+      logger.error(
+        "Could not close connections in time, forcefully shutting down"
+      );
       process.exit(1);
     }, forceTimeout);
 
     server.close(() => {
-      logger.info('Closed out remaining connections');
+      logger.info("Closed out remaining connections");
       process.exit(0);
     });
   });
 
-  // eslint-disable-next-line consistent-return, max-len
-  const middlewareOutput: Middleware<Config.KoaMiddleware> = (ctx, next): Promise<unknown> | void => {
+  const middlewareOutput: Middleware<Config.KoaMiddleware> = (
+    ctx,
+    next
+  ): Promise<unknown> | void => {
     if (shuttingDown) {
       ctx.status = 503;
-      ctx.body = 'Server is in the process of shutting down';
-      ctx.set('Connection', 'close');
+      ctx.body = "Server is in the process of shutting down";
+      ctx.set("Connection", "close");
     } else {
       return next();
     }

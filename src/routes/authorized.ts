@@ -1,9 +1,9 @@
-import Router from '@koa/router';
+import Router from "@koa/router";
 
-import { custom } from '../controllers';
+import { user } from "../controllers";
 
-const customRouter = new Router();
+const authorizedRouter = new Router();
 
-customRouter.get('/custom', custom.customEndpoint);
+authorizedRouter.post("/user", user.create);
 
-export default customRouter;
+export default authorizedRouter;

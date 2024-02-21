@@ -1,7 +1,4 @@
-import unauthorized from './unauthorized';
-import authorized from './authorized';
+import unauthorized from "./unauthorized";
+import authorized from "./authorized";
 
-export {
-  unauthorized,
-  authorized,
-};
+export { unauthorized, authorized };

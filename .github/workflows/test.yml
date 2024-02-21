@@ -2,32 +2,49 @@ name: Test
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18.15.0
-    - run: npm ci
-    - run: npx eslint src
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+      - run: npm ci
+      - run: npx eslint src
 
   test:
     name: Test Code
-    needs: [ lint ]
+    needs: [lint]
     runs-on: ubuntu-latest
     environment: dev
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 18.15.0
-    - run: npm ci
-    - run: npx jest
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.10.0
+      - run: npm ci
+      - run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+          API_KEY_SELF: "MOCK_API_KEY"
+      - run: npx jest
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/test
+          API_KEY_SELF: "MOCK_API_KEY"

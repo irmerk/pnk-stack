@@ -1,2 +1,2 @@
-export * as custom from './custom';
-export * as health from './health';
+export * as health from "./health";
+export * as user from "./user";

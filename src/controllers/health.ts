@@ -1,15 +1,6 @@
-import axios from 'axios';
-import type { AxiosResponse } from 'axios';
-import { Middleware, ParameterizedContext } from 'koa';
+import { Middleware, ParameterizedContext } from "koa";
 
-import { validate } from '../libraries';
-import { Config } from '../interfaces';
-import * as schema from '../schemas';
-
-interface CatFactResponse {
-  fact: string;
-  length: number;
-}
+import { Config } from "../interfaces";
 
 /**
  * Koa middleware for a health check endpoint.
@@ -17,7 +8,6 @@ interface CatFactResponse {
  * Typically used for monitoring and uptime checks.
  *
  * @function status
- * @async
  * @type {Middleware<Config.KoaMiddleware>}
  *
  * @param {ParameterizedContext<Config.KoaMiddleware>} ctx - Koa context.
@@ -29,33 +19,14 @@ interface CatFactResponse {
  *   "timestamp": 1627988479169,
  *   "uptime": 345.6789,
  *   "message": "OK"
- *   "catFact": {
- *      "fact": "Some random fact"
- *      "length": 2
- *   }
  * }
  */
-export const status: Middleware<Config.KoaMiddleware> = async (
-  ctx: ParameterizedContext<Config.KoaMiddleware>,
+export const status: Middleware<Config.KoaMiddleware> = (
+  ctx: ParameterizedContext<Config.KoaMiddleware>
 ) => {
-  // Right now these validate arbitrary things against a random schema, so this should be customized.
-  validate(ctx.request.body, schema.health.body);
-  validate(ctx.request.query, schema.health.query);
-
-  const config = {
-    method: 'get',
-    url: 'https://catfact.ninja/fact',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const { data } = await axios<AxiosResponse<CatFactResponse>>(config);
-
   ctx.response.body = {
     timestamp: Date.now(),
     uptime: process.uptime(),
-    message: 'OK',
-    catFact: data,
+    message: "OK",
   };
 };

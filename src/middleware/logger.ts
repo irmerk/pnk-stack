@@ -1,39 +1,52 @@
-import * as winston from 'winston';
-import { HttpError, Middleware, DefaultContext } from 'koa';
+import * as winston from "winston";
+import { StatusCodes } from "http-status-codes";
+import { HttpError, Middleware, DefaultContext } from "koa";
 
-import { Config } from '../interfaces';
-import { LOGGER_OPTIONS } from '../config';
+import { Config } from "../interfaces";
+import { LOGGER } from "../config";
 
 /**
  * Koa middleware for logging HTTP requests and responses using the provided Winston logger.
  *
- * @param {winston.Winston} winstonInstance - The Winston logger instance.
+ * @function
+ * @param {object} opts - The options for configuring the logger library.
+ * @param {winston.Winston} opts.library - The Winston logger instance.
  * @returns {Middleware<Config.KoaMiddleware, DefaultContext, any>} - Koa middleware for logging.
  */
-const logger = (
-  winstonInstance: typeof winston,
-): Middleware<Config.KoaMiddleware, DefaultContext, any> => {
-  const middlewareOutput: Middleware<Config.KoaMiddleware> = async (ctx, next): Promise<void> => {
+const logger = ({
+  library,
+}: {
+  library: typeof winston;
+}): Middleware<Config.KoaMiddleware, DefaultContext, any> => {
+  const middlewareOutput: Middleware<Config.KoaMiddleware> = async (
+    ctx,
+    next
+  ): Promise<void> => {
     const start = new Date().getTime();
 
     try {
       await next();
-    } catch (error: unknown) {
-      ctx.status = error instanceof HttpError ? error.status : 500;
-      ctx.body = error instanceof Error ? error.message : '';
+    } catch (err: unknown) {
+      ctx.status =
+        err instanceof HttpError
+          ? err.status
+          : StatusCodes.INTERNAL_SERVER_ERROR;
+      ctx.body = err instanceof Error ? err.message : "";
     }
 
     const ms = new Date().getTime() - start;
 
-    let logLevel: typeof LOGGER_OPTIONS[keyof typeof LOGGER_OPTIONS];
+    let logLevel: (typeof LOGGER.OPTIONS)[keyof typeof LOGGER.OPTIONS];
 
-    if (ctx.status >= 500) logLevel = LOGGER_OPTIONS.ERROR;
-    else if (ctx.status >= 400) logLevel = LOGGER_OPTIONS.WARN;
-    else logLevel = LOGGER_OPTIONS.INFO;
+    if (ctx.status >= StatusCodes.INTERNAL_SERVER_ERROR)
+      logLevel = LOGGER.OPTIONS.ERROR;
+    else if (ctx.status >= StatusCodes.BAD_REQUEST)
+      logLevel = LOGGER.OPTIONS.WARN;
+    else logLevel = LOGGER.OPTIONS.INFO;
 
     const message = `${ctx.method} ${ctx.originalUrl} ${ctx.status} ${ms}ms`;
 
-    winstonInstance.log(logLevel, message);
+    library.log(logLevel, message);
   };
 
   return middlewareOutput;
